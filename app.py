@@ -200,7 +200,8 @@ footer a{color:inherit}#results-area{min-height:100px}.tab-pane{min-height:200px
 <span class="navbar-text text-white-50 small">Metabuscador academico via VUFIND</span></div></nav>
 <div class="container">{content}</div>
 <footer class="mt-5 py-3 text-center text-muted small border-top">
-MetaVufindScraping - Busqueda en <a href="https://descubridor.americana.edu.co" target="_blank">Americana VUFIND</a></footer></body></html>"""
+MetaVufindScraping - Busqueda en <a href="https://descubridor.americana.edu.co" target="_blank">Americana VUFIND</a></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script></body></html>"""
 
 INDEX_HTML = """<div class="row justify-content-center"><div class="col-lg-10">
 <div class="text-center mb-3"><h1 class="display-6 fw-bold text-primary">MetaVufindScraping</h1>
