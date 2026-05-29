@@ -230,10 +230,10 @@ RESULTS_CONTAINER = """<div id="results-container">
 <ul class="nav nav-tabs mb-3">{tabs}</ul><div class="tab-content">{tab_content}</div></div>"""
 
 TAB_HEADER = """<li class="nav-item"><button class="nav-link {active}" id="tab-{tid}" data-bs-toggle="tab"
-data-bs-target="#content-{tid}" type="button" role="tab" hx-get="/api/search/{tid}?query={query}&max_results={mr}"
-hx-trigger="click once" hx-target="#content-{tid}" hx-indicator="#indicator-{tid}">{name}</button></li>"""
-
-TAB_PANE = """<div class="tab-pane fade {active}" id="content-{tid}" role="tabpanel">
+data-bs-target="#content-{tid}" type="button" role="tab">{name}</button></li>"""
+TAB_PANE = """<div class="tab-pane fade {active}" id="content-{tid}" role="tabpanel"
+hx-get="/api/search/{tid}?query={query}&max_results={mr}"
+hx-trigger="{trigger}" hx-target="#content-{tid}" hx-indicator="#indicator-{tid}">
 <div id="indicator-{tid}" class="text-center py-5"><div class="spinner-border text-primary"></div>
 <p class="mt-2 text-muted">Cargando {name}...</p></div></div>"""
 
@@ -258,8 +258,8 @@ async def index(request: Request, query: str = ""):
 @app.post("/api/search", response_class=HTMLResponse)
 async def search_results(request: Request, query: str = Form(..., min_length=1), max_results: int = Form(50, ge=10, le=200)):
     config.max_results_per_target = max_results
-    tabs = "".join(TAB_HEADER.replace('{tid}', t.id).replace('{name}', t.name).replace('{query}', query).replace('{mr}', str(max_results)).replace('{active}', 'active' if i==0 else '') for i, t in enumerate(config.targets))
-    tab_content = "".join(TAB_PANE.replace('{tid}', t.id).replace('{name}', t.name).replace('{active}', 'show active' if i==0 else '') for i, t in enumerate(config.targets))
+    tabs = "".join(TAB_HEADER.replace('{tid}', t.id).replace('{name}', t.name).replace('{active}', 'active' if i==0 else '') for i, t in enumerate(config.targets))
+    tab_content = "".join(TAB_PANE.replace('{tid}', t.id).replace('{name}', t.name).replace('{mr}', str(max_results)).replace('{query}', query).replace('{active}', 'show active' if i==0 else '').replace('{trigger}', 'revealed' if i == 0 else 'click once') for i, t in enumerate(config.targets))
     return HTMLResponse(RESULTS_CONTAINER.replace('{query}', query).replace('{max_results}', str(max_results)).replace('{tabs}', tabs).replace('{tab_content}', tab_content))
 
 @app.get("/api/search/{target_id}", response_class=HTMLResponse)
