@@ -229,18 +229,34 @@ RESULTS_CONTAINER = """<div id="results-container">
 <ul class="nav nav-tabs mb-0" id="resultsTabs">{tabs}</ul><div class="tab-content">{tab_content}</div>
 <script>
 (function(){
-    var btns = document.querySelectorAll('#resultsTabs .nav-link');
-    btns.forEach(function(btn){ htmx.trigger(btn, 'load-tab'); });
+    var loaded = {};
+    function loadTab(paneId){
+        if(loaded[paneId]) return;
+        loaded[paneId] = true;
+        var pane = document.getElementById(paneId);
+        if(!pane) return;
+        var url = pane.getAttribute('data-url');
+        if(!url) return;
+        fetch(url).then(function(r){ return r.text(); }).then(function(html){
+            pane.innerHTML = html;
+        }).catch(function(){
+            pane.innerHTML = '<div class="alert alert-danger m-2">Error al cargar</div>';
+        });
+    }
+    var firstPane = document.querySelector('#results-container .tab-pane.show');
+    if(firstPane) loadTab(firstPane.id);
+    document.addEventListener('shown.bs.tab', function(e){
+        var target = document.querySelector(e.target.getAttribute('data-bs-target'));
+        if(target) loadTab(target.id);
+    });
 })();
 </script></div>"""
 
 TAB_HEADER = """<li class="nav-item"><button class="nav-link {active}" id="tab-{tid}" data-bs-toggle="tab"
-data-bs-target="#content-{tid}" type="button" role="tab"
-hx-get="/api/search/{tid}?query={query}&max_results={mr}"
-hx-trigger="load-tab once, click once" hx-target="#content-{tid}" hx-indicator="#indicator-{tid}"
-hx-swap="innerHTML">{name}</button></li>"""
-TAB_PANE = """<div class="tab-pane fade {active}" id="content-{tid}" role="tabpanel">
-<div id="indicator-{tid}" class="text-center py-4"><div class="spinner-border spinner-border-sm text-primary"></div>
+data-bs-target="#content-{tid}" type="button" role="tab">{name}</button></li>"""
+TAB_PANE = """<div class="tab-pane fade {active}" id="content-{tid}" role="tabpanel"
+data-url="/api/search/{tid}?query={query}&max_results={mr}">
+<div class="text-center py-4"><div class="spinner-border spinner-border-sm text-primary"></div>
 <small class="d-block mt-1 text-muted">Cargando {name}...</small></div></div>"""
 
 TAB_RESULTS = """<div>{content}</div>"""
