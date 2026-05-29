@@ -227,20 +227,13 @@ RESULTS_CONTAINER = """<div id="results-container">
 <div class="d-flex justify-content-between align-items-center mb-3">
 <h4 class="mb-0"><i class="bi bi-list-check"></i> Resultados para: <span class="text-primary">"{query}"</span></h4>
 <a href="/api/export?query={query}&max_results={max_results}" class="btn btn-success" download><i class="bi bi-file-earmark-excel"></i> Descargar Excel</a></div>
-<ul class="nav nav-tabs mb-3">{tabs}</ul><div class="tab-content">{tab_content}</div>
-<script>
-setTimeout(function(){
-    document.querySelectorAll('#results-container .tab-pane').forEach(function(pane){
-        htmx.trigger(pane, 'load-tab');
-    });
-}, 50);
-</script></div>"""
+<ul class="nav nav-tabs mb-3">{tabs}</ul><div class="tab-content">{tab_content}</div></div>"""
 
 TAB_HEADER = """<li class="nav-item"><button class="nav-link {active}" id="tab-{tid}" data-bs-toggle="tab"
 data-bs-target="#content-{tid}" type="button" role="tab">{name}</button></li>"""
 TAB_PANE = """<div class="tab-pane fade {active}" id="content-{tid}" role="tabpanel"
 hx-get="/api/search/{tid}?query={query}&max_results={mr}"
-hx-trigger="load-tab once" hx-target="#content-{tid}" hx-indicator="#indicator-{tid}">
+hx-trigger="revealed" hx-target="this" hx-indicator="#indicator-{tid}">
 <div id="indicator-{tid}" class="text-center py-5"><div class="spinner-border text-primary"></div>
 <p class="mt-2 text-muted">Cargando {name}...</p></div></div>"""
 
