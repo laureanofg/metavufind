@@ -190,7 +190,7 @@ BASE_HTML = """<!DOCTYPE html>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/htmx.org@1.9.12/dist/htmx.min.js"></script>
 <style>
-.htmx-indicator{display:none}.htmx-request .htmx-indicator{display:inline}.htmx-request .htmx-indicator-hide{display:none}
+.htmx-indicator{{display:none}}.htmx-request .htmx-indicator{{display:inline}}.htmx-request .htmx-indicator-hide{{display:none}}}
 .nav-tabs .nav-link{font-size:.85rem;white-space:nowrap}.table td{vertical-align:middle;font-size:.875rem}
 .table-responsive{max-height:70vh;overflow-y:auto}.badge{font-size:.75rem;white-space:normal;text-align:left}
 footer a{color:inherit}#results-area{min-height:100px}.tab-pane{min-height:200px}
@@ -252,15 +252,15 @@ def make_tab_table(records, error, target_name):
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request, query: str = ""):
-    targets_html = "".join(TARGETS_SOURCE.format(name=t.name, desc=t.description) for t in config.targets)
-    return HTMLResponse(BASE_HTML.format(content=INDEX_HTML.format(query=query, targets_html=targets_html)))
+    targets_html = "".join(TARGETS_SOURCE.replace('{name}', t.name).replace('{desc}', t.description) for t in config.targets)
+    return HTMLResponse(BASE_HTML.replace('{content}', INDEX_HTML.replace('{query}', query).replace('{targets_html}', targets_html)))
 
 @app.post("/api/search", response_class=HTMLResponse)
 async def search_results(request: Request, query: str = Form(..., min_length=1), max_results: int = Form(50, ge=10, le=200)):
     config.max_results_per_target = max_results
-    tabs = "".join(TAB_HEADER.format(tid=t.id, name=t.name, query=query, mr=max_results, active="active" if i==0 else "") for i, t in enumerate(config.targets))
-    tab_content = "".join(TAB_PANE.format(tid=t.id, name=t.name, active="show active" if i==0 else "") for i, t in enumerate(config.targets))
-    return HTMLResponse(RESULTS_CONTAINER.format(query=query, max_results=max_results, tabs=tabs, tab_content=tab_content))
+    tabs = "".join(TAB_HEADER.replace('{tid}', t.id).replace('{name}', t.name).replace('{query}', query).replace('{mr}', str(max_results)).replace('{active}', 'active' if i==0 else '') for i, t in enumerate(config.targets))
+    tab_content = "".join(TAB_PANE.replace('{tid}', t.id).replace('{name}', t.name).replace('{active}', 'show active' if i==0 else '') for i, t in enumerate(config.targets))
+    return HTMLResponse(RESULTS_CONTAINER.replace('{query}', query).replace('{max_results}', str(max_results)).replace('{tabs}', tabs).replace('{tab_content}', tab_content))
 
 @app.get("/api/search/{target_id}", response_class=HTMLResponse)
 async def search_target(request: Request, target_id: str, query: str = Query(..., min_length=1), max_results: int = Query(50, ge=10, le=200)):
