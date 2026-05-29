@@ -1,0 +1,64 @@
+base_url: "https://descubridor.americana.edu.co"
+max_results_per_target: 50
+results_per_page: 20
+
+targets:
+  - id: ebsco_academic_search_complete
+    name: "EBSCO Academic Search Complete"
+    description: "Base de datos academica multidisciplinaria de EBSCO"
+    url_template: "/Ebscoacademicsearchcomplete/Search?lookfor={query}&page={page}"
+    selectors:
+      container: "li.result"
+      title: "a.title.getFull"
+      author: "a.result-author"
+      record_url: "a.hidden.full-record-link.icon-link"
+      fulltext_url: "a.fulltext.icon-link"
+      format: "div.result-formats span.format"
+
+  - id: ebsco_ebook_academic_collection
+    name: "EBSCO eBook Academic Collection"
+    description: "Coleccion de libros electronicos academicos de EBSCO"
+    url_template: "/Ebscoebookacademiccollection/Search?lookfor={query}&page={page}"
+    selectors:
+      container: "li.result"
+      title: "a.title.getFull"
+      author: "a.result-author"
+      record_url: "a.hidden.full-record-link.icon-link"
+      fulltext_url: "a.fulltext.icon-link"
+      format: "div.result-formats span.format"
+
+  - id: legisxperta
+    name: "LegisXperta"
+    description: "Plataforma de informacion juridica de Legis"
+    url_template: "/Legisxperta/Search?lookfor={query}&page={page}"
+    selectors:
+      container: "li.result"
+      title: "a.title.getFull"
+      author: "a.result-author"
+      record_url: "a.hidden.full-record-link.icon-link"
+      fulltext_url: "a.fulltext.icon-link"
+      format: "div.result-formats span.format"
+
+  - id: metarevistas
+    name: "MetaRevistas"
+    description: "Metabuscador de revistas academicas"
+    url_template: "/Metarevistas/Search?lookfor={query}&page={page}"
+    selectors:
+      container: "li.result"
+      title: "a.title.getFull"
+      author: "a.result-author"
+      record_url: "a.hidden.full-record-link.icon-link"
+      fulltext_url: "a.fulltext.icon-link"
+      format: "div.result-formats span.format"
+
+  - id: digitalia
+    name: "Digitalia"
+    description: "Plataforma de libros electronicos en espanol"
+    url_template: "/Search/Results?filter%5B%5D=collection%3A%22Digitalia%22&lookfor={query}&page={page}"
+    selectors:
+      container: "li.result"
+      title: "a.title.getFull"
+      author: "a.result-author"
+      record_url: "a.hidden.full-record-link.icon-link"
+      fulltext_url: "a.fulltext.icon-link"
+      format: "div.result-formats span.format"

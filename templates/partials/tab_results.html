@@ -1,0 +1,67 @@
+<div>
+    {% if error %}
+    <div class="alert alert-danger" role="alert">
+        <i class="bi bi-exclamation-triangle"></i> {{ error }}
+    </div>
+    {% elif not records %}
+    <div class="alert alert-warning" role="alert">
+        <i class="bi bi-info-circle"></i> No se encontraron resultados en {{ target_name }}.
+    </div>
+    {% else %}
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <small class="text-muted">{{ records|length }} resultados encontrados</small>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover table-sm align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th style="width:5%">#</th>
+                    <th style="width:30%">Titulo</th>
+                    <th style="width:20%">Autor(es)</th>
+                    <th style="width:15%">Tipo</th>
+                    <th style="width:15%">Registro</th>
+                    <th style="width:15%">Fulltext</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rec in records %}
+                <tr>
+                    <td class="text-center text-muted small">{{ loop.index }}</td>
+                    <td>
+                        <span class="fw-semibold">{{ rec.title }}</span>
+                    </td>
+                    <td>
+                        <span class="small">{{ rec.authors or '-' }}</span>
+                    </td>
+                    <td>
+                        {% if rec.format_type %}
+                        <span class="badge bg-secondary">{{ rec.format_type }}</span>
+                        {% else %}
+                        <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if rec.record_url %}
+                        <a href="{{ rec.record_url }}" target="_blank" class="btn btn-outline-secondary btn-sm" title="Ver registro completo">
+                            <i class="bi bi-box-arrow-up-right"></i> Ver
+                        </a>
+                        {% else %}
+                        <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if rec.fulltext_url %}
+                        <a href="{{ rec.fulltext_url }}" target="_blank" class="btn btn-outline-success btn-sm" title="Acceder al texto completo">
+                            <i class="bi bi-file-text"></i> Fulltext
+                        </a>
+                        {% else %}
+                        <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</div>

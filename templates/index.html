@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}MetaVufindScraping - Buscar{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="text-center mb-4">
+            <h1 class="display-5 fw-bold text-primary">MetaVufindScraping</h1>
+            <p class="lead text-muted">
+                Metabuscador academico que consulta multiples fuentes del sistema VUFIND
+                de la Corporacion Universitaria Americana.
+            </p>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body p-4">
+                <form
+                    hx-post="/api/search"
+                    hx-target="#results-area"
+                    hx-indicator="#search-spinner"
+                    hx-disabled-elt="this"
+                >
+                    <div class="row g-2 align-items-end">
+                        <div class="col-md-8">
+                            <label for="query" class="form-label fw-semibold">Termino de busqueda</label>
+                            <input
+                                type="text"
+                                class="form-control form-control-lg"
+                                id="query"
+                                name="query"
+                                placeholder="Ej: Colombia, inteligencia artificial, derecho..."
+                                value="{{ query or '' }}"
+                                required
+                                autofocus
+                            >
+                        </div>
+                        <div class="col-md-4">
+                            <label for="max_results" class="form-label fw-semibold">Max resultados por fuente</label>
+                            <select class="form-select form-select-lg" id="max_results" name="max_results">
+                                <option value="20">20</option>
+                                <option value="50" selected>50</option>
+                                <option value="100">100</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            <span id="search-spinner" class="htmx-indicator">
+                                <span class="spinner-border spinner-border-sm me-2"></span>Buscando...
+                            </span>
+                            <span class="htmx-indicator-hide">
+                                <i class="bi bi-search"></i> Buscar
+                            </span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light">
+                <strong><i class="bi bi-database"></i> Fuentes consultadas</strong>
+            </div>
+            <div class="card-body">
+                <div class="row g-2">
+                    {% for target in targets %}
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center p-2 border rounded">
+                            <i class="bi bi-globe2 text-primary me-2 fs-5"></i>
+                            <div>
+                                <strong>{{ target.name }}</strong>
+                                <br><small class="text-muted">{{ target.description }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div id="results-area"></div>
+    </div>
+</div>
+{% endblock %}

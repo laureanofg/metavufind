@@ -1,0 +1,42 @@
+.htmx-indicator {
+    display: none;
+}
+.htmx-request .htmx-indicator {
+    display: inline;
+}
+.htmx-request .htmx-indicator-hide {
+    display: none;
+}
+
+.nav-tabs .nav-link {
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+.table td {
+    vertical-align: middle;
+    font-size: 0.875rem;
+}
+
+.table-responsive {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.badge {
+    font-size: 0.75rem;
+    white-space: normal;
+    text-align: left;
+}
+
+footer a {
+    color: inherit;
+}
+
+#results-area {
+    min-height: 100px;
+}
+
+.tab-pane {
+    min-height: 200px;
+}
