@@ -264,7 +264,7 @@ async def index(request: Request, query: str = ""):
 @app.post("/api/search", response_class=HTMLResponse)
 async def search_results(request: Request, query: str = Form(..., min_length=1), max_results: int = Form(20, ge=10, le=200)):
     config.max_results_per_target = max_results
-    tabs = "".join(TAB_HEADER.replace('{tid}', t.id).replace('{name}', t.name).replace('{active}', 'active' if i==0 else '') for i, t in enumerate(config.targets))
+    tabs = "".join(TAB_HEADER.replace('{tid}', t.id).replace('{name}', t.name).replace('{query}', query).replace('{mr}', str(max_results)).replace('{active}', 'active' if i==0 else '') for i, t in enumerate(config.targets))
     tab_content = "".join(TAB_PANE.replace('{tid}', t.id).replace('{name}', t.name).replace('{mr}', str(max_results)).replace('{query}', query).replace('{active}', 'show active' if i==0 else '') for i, t in enumerate(config.targets))
     return HTMLResponse(RESULTS_CONTAINER.replace('{query}', query).replace('{max_results}', str(max_results)).replace('{tabs}', tabs).replace('{tab_content}', tab_content))
 
