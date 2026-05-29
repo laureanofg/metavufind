@@ -190,7 +190,7 @@ BASE_HTML = """<!DOCTYPE html>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/htmx.org@1.9.12/dist/htmx.min.js"></script>
 <style>
-.htmx-indicator{{display:none}}.htmx-request .htmx-indicator{{display:inline}}.htmx-request .htmx-indicator-hide{{display:none}}}
+.htmx-indicator{display:none}.htmx-request .htmx-indicator{display:inline}.htmx-request .htmx-indicator-hide{display:none}
 .nav-tabs .nav-link{font-size:.85rem;white-space:nowrap}.table td{vertical-align:middle;font-size:.875rem}
 .table-responsive{max-height:70vh;overflow-y:auto}.badge{font-size:.75rem;white-space:normal;text-align:left}
 footer a{color:inherit}#results-area{min-height:100px}.tab-pane{min-height:200px}
@@ -202,40 +202,46 @@ footer a{color:inherit}#results-area{min-height:100px}.tab-pane{min-height:200px
 <footer class="mt-5 py-3 text-center text-muted small border-top">
 MetaVufindScraping - Busqueda en <a href="https://descubridor.americana.edu.co" target="_blank">Americana VUFIND</a></footer></body></html>"""
 
-INDEX_HTML = """<div class="row justify-content-center"><div class="col-lg-8">
-<div class="text-center mb-4"><h1 class="display-5 fw-bold text-primary">MetaVufindScraping</h1>
-<p class="lead text-muted">Metabuscador academico que consulta multiples fuentes del sistema VUFIND.</p></div>
-<div class="card shadow-sm mb-4"><div class="card-body p-4">
+INDEX_HTML = """<div class="row justify-content-center"><div class="col-lg-10">
+<div class="text-center mb-3"><h1 class="display-6 fw-bold text-primary">MetaVufindScraping</h1>
+<p class="text-muted mb-2">Metabuscador academico que consulta multiples fuentes del sistema VUFIND.</p></div>
+<div class="card shadow-sm mb-3"><div class="card-body p-3">
 <form hx-post="/api/search" hx-target="#results-area" hx-indicator="#search-spinner" hx-disabled-elt="this">
 <div class="row g-2 align-items-end">
-<div class="col-md-8"><label class="form-label fw-semibold">Termino de busqueda</label>
-<input type="text" class="form-control form-control-lg" name="query" placeholder="Ej: Colombia, inteligencia artificial..." value="{query}" required autofocus></div>
-<div class="col-md-4"><label class="form-label fw-semibold">Max resultados</label>
-<select class="form-select form-select-lg" name="max_results">
-<option value="20">20</option><option value="50" selected>50</option><option value="100">100</option></select></div></div>
-<div class="mt-3"><button type="submit" class="btn btn-primary btn-lg w-100">
-<span id="search-spinner" class="htmx-indicator"><span class="spinner-border spinner-border-sm me-2"></span>Buscando...</span>
-<span class="htmx-indicator-hide"><i class="bi bi-search"></i> Buscar</span></button></div></form></div></div>
-<div class="card shadow-sm mb-4"><div class="card-header bg-light"><strong><i class="bi bi-database"></i> Fuentes</strong></div>
-<div class="card-body"><div class="row g-2">{targets_html}</div></div></div>
+<div class="col-md-7"><label class="form-label fw-semibold mb-1">Termino de busqueda</label>
+<input type="text" class="form-control" name="query" placeholder="Ej: Colombia, inteligencia artificial..." value="{query}" required autofocus></div>
+<div class="col-md-3"><label class="form-label fw-semibold mb-1">Max resultados</label>
+<select class="form-select" name="max_results">
+<option value="20" selected>20</option><option value="50">50</option><option value="100">100</option></select></div>
+<div class="col-md-2"><button type="submit" class="btn btn-primary w-100">
+<span id="search-spinner" class="htmx-indicator"><span class="spinner-border spinner-border-sm"></span></span>
+<span class="htmx-indicator-hide"><i class="bi bi-search"></i> Buscar</span></button></div></div></form></div></div>
+<details class="mb-2"><summary class="text-muted small cursor-pointer"><i class="bi bi-database"></i> Fuentes consultadas ({targets_count})</summary>
+<div class="row g-1 mt-1">{targets_html}</div></details>
 <div id="results-area"></div></div></div>"""
 
-TARGETS_SOURCE = """<div class="col-md-6"><div class="d-flex align-items-center p-2 border rounded">
-<i class="bi bi-globe2 text-primary me-2 fs-5"></i><div><strong>{name}</strong><br><small class="text-muted">{desc}</small></div></div></div>"""
+TARGETS_SOURCE = """<div class="col-md-4 col-6"><small class="text-muted"><i class="bi bi-globe2 text-primary me-1"></i>{name}</small></div>"""
 
 RESULTS_CONTAINER = """<div id="results-container">
-<div class="d-flex justify-content-between align-items-center mb-3">
-<h4 class="mb-0"><i class="bi bi-list-check"></i> Resultados para: <span class="text-primary">"{query}"</span></h4>
-<a href="/api/export?query={query}&max_results={max_results}" class="btn btn-success" download><i class="bi bi-file-earmark-excel"></i> Descargar Excel</a></div>
-<ul class="nav nav-tabs mb-3">{tabs}</ul><div class="tab-content">{tab_content}</div></div>"""
+<div class="d-flex justify-content-between align-items-center mb-2">
+<h5 class="mb-0"><i class="bi bi-list-check"></i> Resultados: <span class="text-primary">"{query}"</span></h5>
+<a href="/api/export?query={query}&max_results={max_results}" class="btn btn-sm btn-success" download><i class="bi bi-file-earmark-excel"></i> Excel</a></div>
+<ul class="nav nav-tabs mb-0" id="resultsTabs">{tabs}</ul><div class="tab-content">{tab_content}</div>
+<script>
+(function(){
+    var btns = document.querySelectorAll('#resultsTabs .nav-link');
+    btns.forEach(function(btn){ htmx.trigger(btn, 'load-tab'); });
+})();
+</script></div>"""
 
 TAB_HEADER = """<li class="nav-item"><button class="nav-link {active}" id="tab-{tid}" data-bs-toggle="tab"
-data-bs-target="#content-{tid}" type="button" role="tab">{name}</button></li>"""
-TAB_PANE = """<div class="tab-pane fade {active}" id="content-{tid}" role="tabpanel"
+data-bs-target="#content-{tid}" type="button" role="tab"
 hx-get="/api/search/{tid}?query={query}&max_results={mr}"
-hx-trigger="revealed" hx-target="this" hx-indicator="#indicator-{tid}">
-<div id="indicator-{tid}" class="text-center py-5"><div class="spinner-border text-primary"></div>
-<p class="mt-2 text-muted">Cargando {name}...</p></div></div>"""
+hx-trigger="load-tab once, click once" hx-target="#content-{tid}" hx-indicator="#indicator-{tid}"
+hx-swap="innerHTML">{name}</button></li>"""
+TAB_PANE = """<div class="tab-pane fade {active}" id="content-{tid}" role="tabpanel">
+<div id="indicator-{tid}" class="text-center py-4"><div class="spinner-border spinner-border-sm text-primary"></div>
+<small class="d-block mt-1 text-muted">Cargando {name}...</small></div></div>"""
 
 TAB_RESULTS = """<div>{content}</div>"""
 
@@ -253,10 +259,10 @@ def make_tab_table(records, error, target_name):
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request, query: str = ""):
     targets_html = "".join(TARGETS_SOURCE.replace('{name}', t.name).replace('{desc}', t.description) for t in config.targets)
-    return HTMLResponse(BASE_HTML.replace('{content}', INDEX_HTML.replace('{query}', query).replace('{targets_html}', targets_html)))
+    return HTMLResponse(BASE_HTML.replace('{content}', INDEX_HTML.replace('{query}', query).replace('{targets_html}', targets_html).replace('{targets_count}', str(len(config.targets)))))
 
 @app.post("/api/search", response_class=HTMLResponse)
-async def search_results(request: Request, query: str = Form(..., min_length=1), max_results: int = Form(50, ge=10, le=200)):
+async def search_results(request: Request, query: str = Form(..., min_length=1), max_results: int = Form(20, ge=10, le=200)):
     config.max_results_per_target = max_results
     tabs = "".join(TAB_HEADER.replace('{tid}', t.id).replace('{name}', t.name).replace('{active}', 'active' if i==0 else '') for i, t in enumerate(config.targets))
     tab_content = "".join(TAB_PANE.replace('{tid}', t.id).replace('{name}', t.name).replace('{mr}', str(max_results)).replace('{query}', query).replace('{active}', 'show active' if i==0 else '') for i, t in enumerate(config.targets))
